@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # חשוב להוסיף את זה
+          ref: main  # הוספת שורה זו
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -42,17 +43,27 @@ jobs:
         id: diff_link
         run: |
           echo "diff_link=https://github.com/eshaham/israeli-bank-scrapers/compare/v${{ steps.get_old_version.outputs.old_version }}...v${{ steps.get_new_version.outputs.new_version }}" >> $GITHUB_OUTPUT
+      - name: Check default branch
+        run: |
+          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+          echo "DEFAULT_BRANCH=${DEFAULT_BRANCH}" >> $GITHUB_ENV
+          
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: 'deps/israeli-bank-scrapers-core'
-          base: main  # וודא שזה תואם לשם הענף הראשי שלך
+          base: ${{ env.DEFAULT_BRANCH }}
           delete-branch: true
-          commit-message: 'chore(deps): update israeli-bank-scrapers-core'
-          title: 'Update israeli-bank-scrapers-core dependency'
+          commit-message: |
+            chore(deps): update israeli-bank-scrapers-core to ${{ steps.get_new_version.outputs.new_version }}
+          title: |
+            Update israeli-bank-scrapers-core to ${{ steps.get_new_version.outputs.new_version }}
           body: |
             עדכון אוטומטי של התלויות
+            
+            * מגרסה: ${{ steps.get_old_version.outputs.old_version }}
+            * לגרסה: ${{ steps.get_new_version.outputs.new_version }}
             
             קישור להשוואת גרסאות: ${{ steps.diff_link.outputs.diff_link }}
           labels: dependencies
