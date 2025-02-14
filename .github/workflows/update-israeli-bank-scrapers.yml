@@ -50,17 +50,14 @@ jobs:
           
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: deps/israeli-bank-scrapers-core
-          base: ${{ github.ref_name }}  # שימוש בשם הענף הנוכחי
+          base: main  # Explicitly set to main instead of using dynamic reference
           delete-branch: true
           commit-message: |
             chore(deps): update israeli-bank-scrapers-core to ${{ steps.get_new_version.outputs.new_version }}
-          title: |
-            Update israeli-bank-scrapers-core to ${{ steps.get_new_version.outputs.new_version }}
+          title: Update israeli-bank-scrapers-core to ${{ steps.get_new_version.outputs.new_version }}
           body: |
             עדכון אוטומטי של התלויות
             
