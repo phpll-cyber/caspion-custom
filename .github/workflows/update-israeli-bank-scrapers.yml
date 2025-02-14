@@ -53,7 +53,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: 'deps/israeli-bank-scrapers-core'
-          base: ${{ env.DEFAULT_BRANCH }}
+          base: main  # שינוי מ-master ל-main
           delete-branch: true
           commit-message: |
             chore(deps): update israeli-bank-scrapers-core to ${{ steps.get_new_version.outputs.new_version }}
