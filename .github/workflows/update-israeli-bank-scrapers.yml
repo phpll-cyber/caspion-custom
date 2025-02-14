@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # חשוב להוסיף את זה
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -45,10 +47,12 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: 'deps/israeli-bank-scrapers-core'
-          base: 'main'
-          delete-branch: true # Delete the branch after the pull request is closed
+          base: main  # וודא שזה תואם לשם הענף הראשי שלך
+          delete-branch: true
           commit-message: 'chore(deps): update israeli-bank-scrapers-core'
           title: 'Update israeli-bank-scrapers-core dependency'
           body: |
             עדכון אוטומטי של התלויות
+            
+            קישור להשוואת גרסאות: ${{ steps.diff_link.outputs.diff_link }}
           labels: dependencies
