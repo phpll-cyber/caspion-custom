@@ -1,21 +1,19 @@
-name: Update israeli-bank-scrapers
+name: Update Dependencies
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
-  # Manual trigger
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sundays
 
 jobs:
-  update:
+  update-deps:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -42,16 +40,15 @@ jobs:
         id: diff_link
         run: |
           echo "diff_link=https://github.com/eshaham/israeli-bank-scrapers/compare/v${{ steps.get_old_version.outputs.old_version }}...v${{ steps.get_new_version.outputs.new_version }}" >> $GITHUB_OUTPUT
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@70a41aba780001da0a30141984ae2a0c95d8704e # v6.0.2
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: 'deps/israeli-bank-scrapers-core'
-          base: 'master'
+          base: 'main'
           delete-branch: true # Delete the branch after the pull request is closed
-          commit-message: 'Deps: Upgrade israeli-bank-scrapers to ${{ steps.get_new_version.outputs.new_version }}'
-          title: 'Deps: Upgrade israeli-bank-scrapers to ${{ steps.get_new_version.outputs.new_version }}'
+          commit-message: 'chore(deps): update israeli-bank-scrapers-core'
+          title: 'Update israeli-bank-scrapers-core dependency'
           body: |
-            Upgrade israeli-bank-scrapers-core library to ${{ steps.get_new_version.outputs.new_version }}
-            Changes:
-            - [Diff Link](${{ steps.diff_link.outputs.diff_link }})
+            עדכון אוטומטי של התלויות
+          labels: dependencies
